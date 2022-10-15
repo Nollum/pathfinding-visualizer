@@ -39,7 +39,7 @@
   }
 
   let cellStyles = {'start': '#FFFFFF', 'empty': 'inherit', 'end': '#FFFFFF', 'wall': '#000000', 'path': '#222222'}
-  let cellImages = {'start': '../public/start.svg', 'end': '../public/finish.svg'}
+  let cellImages = {'start': 'start.svg', 'end': 'finish.svg'}
 
   const handleMouseOver = (event) => {
     event.target.style.setProperty('background-color', HVR_CLR)
