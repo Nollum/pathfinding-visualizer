@@ -1,6 +1,7 @@
 <script>
   import { onMount } from "svelte"
   import bfs from "./algorithms/bfs";
+  import dfs from './algorithms/dfs'
   import Node from './node'
 
   const COLS = 30 
@@ -75,7 +76,6 @@
   }
 
   const handleClear = (event) => {
-    disabled = false
     handleReset()
     multiCellMode = false
     grid = grid.map((row) => row.map((cell) => { 
@@ -84,6 +84,7 @@
       } 
       return cell
     }))
+    disabled = false
   }
 
   const visualize = async (nodes, path, interval) => {
@@ -97,7 +98,7 @@
       for (let i = 0; i < path.length; i++) {
         let [y,x] = path[i]
         grid[y][x].type = 'path'
-        await new Promise(resolve => setTimeout(resolve, interval*10));
+        await new Promise(resolve => setTimeout(resolve, interval*2));
         grid = grid
       }
     }
@@ -106,11 +107,14 @@
   const handleStart = (event) => {
     disabled = true
     let deepCopy = structuredClone(grid)
-    let nodes, path 
+    let nodes
+    let path
     if (selected === algos[0]) {
       [nodes, path] = bfs(deepCopy, startNode)
+    } else if (selected === algos[1]) {
+      [nodes, path] = dfs(deepCopy, startNode)
     }
-    visualize(nodes, path, 1)
+    visualize(nodes, path, 50)
   }
 
   onMount(() => {
@@ -150,8 +154,8 @@
             class="cell" id="{i}-{j}"
             style="width: {cell_size}px; 
                   height: {cell_size}px; 
-                  background-color: {cellStyles[grid[i][j].type]}; 
                   background-image: url({cellImages[grid[i][j].type]}); 
+                  background-color: {cellStyles[grid[i][j].type]}; 
                   background-size: contain;"
             />
           {:else} 

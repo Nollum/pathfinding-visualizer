@@ -1,6 +1,6 @@
 function getNeighbours(rows, cols, grid, node) {
-    let dr = [-1, +1, 0, 0]
-    let dc = [0, 0, +1, -1]
+    let dr = [0, +1, 0, -1]
+    let dc = [-1, 0, +1, 0]
 
     let neighbours = []
     for (let i = 0; i < 4; i++) {
@@ -16,4 +16,14 @@ function getNeighbours(rows, cols, grid, node) {
     return neighbours
 }
 
-export default getNeighbours 
+function backtrace(parent, start, end) {
+    let path = [end] 
+    while (path[path.length - 1] != start) {
+        path.push(parent[path[path.length-1]])
+    }
+    path = path.slice(1,path.length-1)
+    path.reverse()
+    return path
+}
+
+export { getNeighbours, backtrace }
