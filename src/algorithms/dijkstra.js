@@ -22,6 +22,10 @@ function dijkstra(grid, startNode) {
 
     while (unexploredNodes.length) {
         let currentNode = nearestNode(unexploredNodes)
+        if (currentNode.distance === Infinity) {
+            return [nodes, null]
+        }
+        nodes.push(currentNode)
         
         if (currentNode.type === 'end') {
             return [nodes, backtrace(parent, startNode.id, currentNode.id)]
@@ -30,8 +34,6 @@ function dijkstra(grid, startNode) {
         let neighbours = getNeighbours(grid.length, grid[0].length, grid, currentNode)
 
         for (let i = 0; i < neighbours.length; i++) {
-            
-            nodes.push(neighbours[i]);
             let newDist = currentNode.distance + currentNode.weight
             if (newDist < neighbours[i].distance) {
                 neighbours[i].distance = newDist
@@ -39,8 +41,6 @@ function dijkstra(grid, startNode) {
             } 
         }
     }
-    
-    return [nodes, null]
 
 }
 
