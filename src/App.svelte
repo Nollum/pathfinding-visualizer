@@ -2,6 +2,7 @@
   import { onMount } from "svelte"
   import bfs from "./algorithms/bfs";
   import dfs from './algorithms/dfs'
+  import dijkstra from "./algorithms/dijkstra";
   import Node from './node'
 
   const COLS = 30 
@@ -20,10 +21,12 @@
 
   let unHoverable = ['start', 'end', 'wall']
 
-  let algos = ['Breadth-First Search', 'Depth-First Search']
+  let algos = ['Breadth-First Search', 'Depth-First Search', 'Dijkstra\'s']
   let selected
 
   let multiCellMode = false
+  let selectedMode = 'wall'
+  let cellModes = ['wall', 'weight']
   
   const initializeGrid = () => {
     for (let i = 0; i < ROWS; i++) {
@@ -40,7 +43,7 @@
   }
 
   let cellStyles = {'start': '#FFFFFF', 'empty': 'inherit', 'end': '#FFFFFF', 'wall': '#000000', 'path': '#222222'}
-  let cellImages = {'start': 'start.svg', 'end': 'finish.svg'}
+  let cellImages = {'start': 'start.svg', 'end': 'finish.svg', 'weight': 'weight.svg'}
 
   const handleMouseOver = (event) => {
     event.target.style.setProperty('background-color', HVR_CLR)
@@ -53,7 +56,9 @@
   const handleMouseMove = (event) => {
     if (multiCellMode) {
       let [y, x] = event.target.id.split('-')
-      grid[y][x].type = 'wall' 
+      if (selectedMode === 'wall') {
+        grid[y][x].type = 'wall' 
+      } 
     }
   }
 
@@ -67,7 +72,12 @@
       multiCellMode = false
     } else {
       let [y, x] = event.target.id.split('-')
-      grid[y][x].type = 'wall'  
+      if (selectedMode === 'wall') {
+        grid[y][x].type = 'wall' 
+      } else {
+        grid[y][x].weight = 10
+        grid[y][x].type = 'weight' 
+      } 
     }
   }
 
@@ -79,6 +89,7 @@
     handleReset()
     multiCellMode = false
     grid = grid.map((row) => row.map((cell) => { 
+      cell.weight = 1
       if (cell.type !== 'start' && cell.type !== 'end') {
         cell.type = 'empty'
       } 
@@ -113,8 +124,10 @@
       [nodes, path] = bfs(deepCopy, startNode)
     } else if (selected === algos[1]) {
       [nodes, path] = dfs(deepCopy, startNode)
+    } else if (selected === algos[2]) {
+      [nodes, path] = dijkstra(deepCopy, startNode)
     }
-    visualize(nodes, path, 50)
+    visualize(nodes, path, 10)
   }
 
   onMount(() => {
@@ -140,6 +153,9 @@
       <button id="startBtn" on:click={handleStart}>
         start 
       </button>
+      {#each cellModes as value}
+        <label><input type="radio" {value} bind:group={selectedMode}> {value}</label>
+      {/each}
     </nav>
     <div class="container" 
       bind:clientWidth={container_width} 
@@ -161,7 +177,7 @@
           {:else} 
             <div 
             class="cell" id="{i}-{j}"
-            style="width: {cell_size}px; height: {cell_size}px; background-color: {grid[i][j].type === 'path' ? '#23CF3A' : grid[i][j].visited ? 'yellow' : cellStyles[grid[i][j].type]}"
+            style="width: {cell_size}px; height: {cell_size}px; background-image: url({cellImages[grid[i][j].type]}); background-color: {grid[i][j].type === 'path' ? '#23CF3A' : grid[i][j].visited ? 'yellow' : cellStyles[grid[i][j].type]}"
             on:mouseover={disabled ? () => {} : handleMouseOver}
             on:mouseout={disabled ? () => {} : handleMouseOut}
             on:mousemove={disabled ? () => {} : handleMouseMove}

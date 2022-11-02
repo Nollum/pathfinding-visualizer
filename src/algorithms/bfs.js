@@ -8,7 +8,7 @@ function bfs(grid, startNode) {
     nodes.push(startNode)
     queue.push(startNode)
     startNode.visited = true 
-    while (queue.length > 0) {
+    while (queue.length) {
         let v = queue.shift()
         let neighbours = getNeighbours(grid.length, grid[0].length, grid, v)
         for (let i = 0; i < neighbours.length; i++) {

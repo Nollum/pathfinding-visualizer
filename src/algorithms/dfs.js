@@ -7,7 +7,7 @@ function dfs(grid, startNode) {
     stack.push(startNode)
     nodes.push(startNode)
     startNode.visited = true
-    while (stack.length > 0) {
+    while (stack.length) {
         let v = stack.pop()
         if (!v.visited) {
             v.visited = true
