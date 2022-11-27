@@ -1,8 +1,9 @@
 <script>
   import { onMount } from "svelte"
-  import bfs from "./algorithms/bfs";
+  import bfs from "./algorithms/bfs"
   import dfs from './algorithms/dfs'
-  import dijkstra from "./algorithms/dijkstra";
+  import dijkstra from "./algorithms/dijkstra"
+  import astar from './algorithms/astar'
   import Node from './node'
 
   const COLS = 30 
@@ -21,7 +22,7 @@
 
   let unHoverable = ['start', 'end', 'wall']
 
-  let algos = ['Breadth-First Search', 'Depth-First Search', 'Dijkstra\'s']
+  let algos = ['Breadth-First Search', 'Depth-First Search', 'Dijkstra\'s', 'A*']
   let selected
 
   let multiCellMode = false
@@ -126,6 +127,8 @@
       [nodes, path] = dfs(deepCopy, startNode)
     } else if (selected === algos[2]) {
       [nodes, path] = dijkstra(deepCopy, startNode)
+    } else if (selected === algos[3]) {
+      [nodes, path] = astar(deepCopy, startNode, endNode)
     }
     visualize(nodes, path, 10)
   }
