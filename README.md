@@ -6,3 +6,4 @@ Supported algorithms:
 * BFS
 * DFS
 * Dijkstra's
+* A*
